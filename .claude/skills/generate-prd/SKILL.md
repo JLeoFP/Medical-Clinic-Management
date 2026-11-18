@@ -1,13 +1,15 @@
 ---
 name: generate-prd
-description: Genera un Documento de Requisitos de Producto (PRD) completo a partir de un prompt inicial, usando como fuente obligatoria la entrevista de levantamiento (Entrevista/Entrevista.md) y clarificando toda ambigüedad con preguntas al usuario antes de finalizar. Usar cuando el usuario pida "generar un PRD", "documento de requisitos", "product requirements", "especificar el producto", o invoque /generate-prd o /generate-prd-command.
+description: Genera un Documento de Requisitos de Producto (PRD) completo a partir de un prompt inicial, usando como fuente obligatoria la entrevista de levantamiento (docs/Entrevista.md) y clarificando toda ambigüedad con preguntas al usuario antes de finalizar. Usar cuando el usuario pida "generar un PRD", "documento de requisitos", "product requirements", "especificar el producto", o invoque /generate-prd o /generate-prd-command.
 allowed-tools: Read, Write, Edit, Glob, Grep, AskUserQuestion
 metadata:
   author: local
   version: "1.0"
 ---
 
-Genera un **Documento de Requisitos de Producto (PRD)** completo, en español, a partir del prompt inicial del usuario.
+Genera un **Documento de Requisitos de Producto (PRD)** completo a partir del prompt inicial del usuario.
+
+**Idioma**: el PRD se redacta en el idioma que exija `CLAUDE.md` para documentos generados por agentes (actualmente **portugués**). Si `CLAUDE.md` no indica nada, usa el idioma del prompt. Los títulos de [template.md](template.md) se traducen a ese idioma, manteniendo su estructura. Las respuestas al usuario en el chat siguen el idioma que indique `CLAUDE.md` para conversar (actualmente español).
 
 **Límite de alcance**: este flujo solo produce documentación. No escribas ni modifiques código del proyecto. Al terminar el PRD, detente y presenta el resultado.
 
@@ -27,7 +29,7 @@ Si no se recibe ningún prompt, pregunta al usuario con **AskUserQuestion** (o e
 
 La **entrevista de levantamiento de requisitos** es la fuente primaria y obligatoria del PRD:
 
-- Lee **completa** `Entrevista/Entrevista.md` (y cualquier otro `Entrevista/*.md`) con **Read** antes de redactar nada.
+- Lee **completa** `docs/Entrevista.md` con **Read** antes de redactar nada. Si hay otras entrevistas (`docs/Entrevista*.md`), léelas también.
 - Si la carpeta o el archivo no existen, avisa al usuario y pregúntale con **AskUserQuestion** si desea continuar solo con el prompt o indicar otra ruta.
 - Extrae de la entrevista, como notas de trabajo:
   - Dolores y problemas del negocio.

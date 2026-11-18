@@ -7,7 +7,7 @@
 | **Fecha** | <AAAA-MM-DD> |
 | **Autor** | <nombre> |
 | **Prompt de origen** | "<prompt inicial del usuario>" |
-| **Fuentes** | <archivos consultados, ej.: Entrevista/Entrevista.md> |
+| **Fuentes** | <archivos consultados, ej.: docs/Entrevista.md> |
 
 ---
 
