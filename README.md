@@ -1,2 +1,3 @@
-# Gest-o-e-administra-o-de-Cl-nica-M-dica
+# Gestão de clínica médica
+
 Sistema web para administracion de clinica medica
