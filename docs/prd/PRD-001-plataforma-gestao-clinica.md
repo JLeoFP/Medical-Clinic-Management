@@ -3,11 +3,11 @@
 | Campo | Valor |
 |---|---|
 | **Status** | Aprovado (2026-11-18) |
-| **Versão** | 1.0 |
-| **Data** | 2026-11-18 |
+| **Versão** | 1.2 |
+| **Data** | 2026-11-18 (revisado em 2026-11-24 e 2026-11-25) |
 | **Autor** | Leo Fzp (gerado com apoio da skill `generate-prd`) |
 | **Prompt de origem** | "lea el archivo @docs/Entrevista.md y cree un PRD basado en ella." |
-| **Fontes** | `docs/Entrevista.md` (entrevista com Patricia); `README.md`; clarificações com o usuário em 2026-11-18 |
+| **Fontes** | `docs/Entrevista.md` (entrevista com Patricia); `README.md`; clarificações com o usuário em 2026-11-18, 2026-11-24 e 2026-11-25 |
 
 ---
 
@@ -58,7 +58,7 @@ A clínica perde o acompanhamento de pacientes que precisam voltar para controle
 | **Médico** | Profissional que atende os pacientes | Registrar e consultar a história clínica; indicar o próximo controle | Diária |
 | **Funcionário de recepção** | Equipe que gerencia turnos, contatos e caixa | Ver quem está na janela de turno para avisar; marcar turnos; registrar cobranças; fechar o caixa | Diária |
 | **Administrador / gestora** (ex.: Patricia) | Responsável pela clínica | Configurar tarifas e agendas; acompanhar faturamento e atendimentos | Diária / semanal |
-| **Paciente** | Pessoa atendida pela clínica | Marcar, cancelar e reprogramar turnos sozinho pela web | Eventual |
+| **Paciente** | Pessoa atendida (ou a ser atendida) pela clínica | Cadastrar-se e marcar, cancelar e reprogramar turnos sozinho pela web | Eventual |
 
 ### 4.2 Stakeholders
 | Stakeholder | Interesse / responsabilidade |
@@ -75,7 +75,7 @@ A clínica perde o acompanhamento de pacientes que precisam voltar para controle
 - História clínica com registro do **próximo controle**.
 - Agenda de médicos com janela de 2 meses.
 - **Acompanhamento de controles futuros** com lista de trabalho para a recepção (v1).
-- Portal do paciente com login para marcar, cancelar e reprogramar turnos.
+- Portal do paciente com autocadastro, login e recuperação de senha, para marcar, cancelar e reprogramar turnos.
 - Registro de cobranças com cálculo automático (tarifa por tipo de atendimento e desconto em dinheiro).
 - Fechamento de caixa diário e relatórios financeiros e operacionais com exportação.
 - Gestão de usuários e perfis de acesso.
@@ -88,14 +88,16 @@ A clínica perde o acompanhamento de pacientes que precisam voltar para controle
 - Múltiplas unidades (sedes): a clínica opera em uma única unidade. _Fonte: Clarificação com usuário._
 - Prescrição eletrônica, laudos e telemedicina.
 - Visualização da história clínica ou dos próximos controles pelo paciente no portal.
+- Adequação à LGPD (consentimento, política de privacidade, direitos do titular): não considerada neste projeto, por se tratar de um trabalho acadêmico (TCC). _Fonte: Clarificação com usuário (2026-11-25)._
 
 ## 6. Requisitos funcionais
 
 | ID | Requisito | Prioridade (MoSCoW) | Fonte |
 |---|---|---|---|
 | **Pacientes e história clínica** | | | |
-| RF-01 | O sistema deve permitir cadastrar e editar pacientes com: nome, sobrenome, CPF (único), telefone, e-mail, telefone de contato de familiar, obra social, bairro e endereço (rua, número, casa/apartamento). | Must | Entrevista §2 |
-| RF-02 | O sistema deve impedir o cadastro de dois pacientes com o mesmo CPF. | Must | Entrevista §2 |
+| RF-01 | O sistema deve permitir cadastrar e editar pacientes com: nome, sobrenome, sexo (Homem ou Mulher), data de nascimento, CPF (único), telefone, e-mail (único), telefone de contato de familiar, obra social, bairro e endereço (rua, número, casa/apartamento). | Must | Entrevista §2; Clarificação com usuário (2026-11-24) |
+| RF-02 | O sistema deve impedir o cadastro ou a edição de um paciente com CPF ou e-mail já registrado para outro paciente, informando qual dado está duplicado. No autocadastro pelo portal, a mensagem é genérica e não revela o dado duplicado (RN-13, RN-16). | Must | Entrevista §2; Clarificação com usuário (2026-11-24) |
+| RF-02a | O sistema deve calcular e exibir a idade atual do paciente a partir da data de nascimento, sem armazená-la, e não deve aceitar data de nascimento futura. | Must | Clarificação com usuário (2026-11-24) |
 | RF-03 | O sistema deve permitir buscar pacientes por nome, sobrenome ou CPF. | Must | Entrevista §2 |
 | RF-04 | O sistema deve permitir que o médico registre, a cada consulta, uma evolução na história clínica com: motivo, observações, medicamentos e indicações. | Must | Entrevista §2 |
 | RF-05 | O sistema deve permitir que qualquer médico da instituição leia a história clínica completa do paciente em ordem cronológica. | Must | Entrevista §2 |
@@ -117,10 +119,10 @@ A clínica perde o acompanhamento de pacientes que precisam voltar para controle
 | RF-19 | O sistema deve impedir dois turnos no mesmo horário para o mesmo médico. | Must | Entrevista §3 |
 | RF-20 | O sistema deve associar a cada turno um tipo de atendimento (usado para calcular a tarifa). | Must | Entrevista §4; Clarificação com usuário |
 | **Portal do paciente** | | | |
-| RF-21 | O sistema deve permitir que o paciente crie uma conta e acesse o portal com usuário e senha. | Must | Entrevista §3; Clarificação com usuário |
+| RF-21 | O sistema deve permitir que o paciente crie uma conta no portal com e-mail e senha e acesse o portal com essas credenciais. Após a confirmação do e-mail, a conta deve ser vinculada ao cadastro de paciente que tem o mesmo e-mail; se não houver cadastro com esse e-mail, o paciente deve informar os dados do RF-01 e o sistema deve criar o cadastro (RN-14, RN-16). | Must | Entrevista §3; Clarificação com usuário (2026-11-25) |
 | RF-22 | O sistema deve permitir que o paciente marque um turno escolhendo médico, data e horário livre dentro da janela de agenda aberta. | Must | Entrevista §3 |
 | RF-23 | O sistema deve permitir que o paciente cancele ou reprograme seus turnos com uma antecedência mínima configurável pelo administrador (padrão: 24 h). | Must | Clarificação com usuário |
-| RF-24 | O sistema deve permitir que o paciente recupere sua senha. | Must | Entrevista §3 |
+| RF-24 | O sistema deve permitir que o paciente recupere sua senha por meio de um link enviado ao e-mail da conta, válido por 1 hora e de uso único (RN-15). | Must | Entrevista §3; Clarificação com usuário (2026-11-25) |
 | **Cobrança** | | | |
 | RF-25 | O sistema deve permitir que o administrador mantenha uma tabela de tarifas por tipo de atendimento. | Must | Entrevista §4; Clarificação com usuário |
 | RF-26 | O sistema deve calcular automaticamente o valor de cada atendimento a partir da tarifa do tipo de atendimento do turno. | Must | Entrevista §4 |
@@ -218,19 +220,34 @@ Cenário: Recepção não acessa conteúdo clínico
 ### HU-05: Cadastrar paciente
 **Como** funcionário de recepção, **quero** cadastrar os dados pessoais e de contato do paciente, **para** poder identificá-lo e contatá-lo.
 
-**Requisitos relacionados:** RF-01, RF-02, RF-03
+**Requisitos relacionados:** RF-01, RF-02, RF-02a, RF-03
 
 ```gherkin
 Cenário: CPF duplicado
   Dado que já existe um paciente com CPF 123.456.789-00
   Quando tento cadastrar outro paciente com o mesmo CPF
   Então o sistema bloqueia o cadastro e mostra o paciente existente
+
+Cenário: E-mail duplicado
+  Dado que já existe um paciente com e-mail "ana@exemplo.com"
+  Quando tento cadastrar outro paciente com o mesmo e-mail
+  Então o sistema bloqueia o cadastro e indica que o e-mail já está em uso
+
+Cenário: Telefone compartilhado por familiares
+  Dado que já existe um paciente com telefone "(11) 98765-4321"
+  Quando cadastro outro paciente da mesma família com o mesmo telefone
+  Então o sistema permite o cadastro
+
+Cenário: Idade calculada
+  Dado que cadastro a paciente "Ana Souza" com data de nascimento 1990-05-10
+  Quando abro a ficha dela em 2026-11-24
+  Então o sistema exibe a idade de 36 anos
 ```
 
 ### HU-06: Marcar turno pela web
 **Como** paciente, **quero** marcar meu turno pelo portal, **para** não depender de ligar para a clínica.
 
-**Requisitos relacionados:** RF-13, RF-17, RF-19, RF-21, RF-22, RF-24
+**Requisitos relacionados:** RF-13, RF-17, RF-19, RF-22
 
 ```gherkin
 Cenário: Marcação dentro da janela
@@ -275,14 +292,14 @@ Cenário: Cancelamento fora do prazo
 
 ```gherkin
 Cenário: Pagamento em dinheiro
-  Dado que a tarifa de "Consulta" é 200,00
+  Dado que a tarifa de "Consulta" é R$ 200,00
   Quando registro a cobrança de uma "Consulta" paga em dinheiro
-  Então o sistema calcula desconto de 20,00 e valor final de 180,00
+  Então o sistema calcula desconto de R$ 20,00 e valor final de R$ 180,00
 
 Cenário: Pagamento com cartão
-  Dado que a tarifa de "Consulta" é 200,00
+  Dado que a tarifa de "Consulta" é R$ 200,00
   Quando registro a cobrança paga com cartão de débito
-  Então o valor final é 200,00, sem desconto
+  Então o valor final é R$ 200,00, sem desconto
 ```
 
 ### HU-09: Fechamento de caixa e relatórios
@@ -309,10 +326,67 @@ Cenário: Exportação
 
 ```gherkin
 Cenário: Alterar tarifa
-  Dado que a tarifa de "Controle" é 150,00
-  Quando altero para 170,00
-  Então novas cobranças usam 170,00
+  Dado que a tarifa de "Controle" é R$ 150,00
+  Quando altero para R$ 170,00
+  Então novas cobranças usam R$ 170,00
   E as cobranças já registradas mantêm o valor original
+```
+
+### HU-11: Acessar o portal
+**Como** paciente, **quero** criar minha conta, entrar no portal e recuperar minha senha quando a esquecer, **para** gerenciar meus turnos sem depender da clínica.
+
+**Requisitos relacionados:** RF-21, RF-24
+
+```gherkin
+Cenário: Criar conta vinculada ao cadastro existente
+  Dado que a recepção cadastrou a paciente "Ana Souza" com o e-mail "ana@exemplo.com"
+  E que ela ainda não tem conta no portal
+  Quando ela cria uma conta no portal com o e-mail "ana@exemplo.com" e uma senha
+  Então o sistema envia um e-mail de confirmação para "ana@exemplo.com"
+  E, após a confirmação, a conta fica vinculada ao cadastro de "Ana Souza"
+  E ela vê no portal os turnos marcados pela clínica
+
+Cenário: Criar conta sem cadastro prévio
+  Dado que "Bruno Lima" nunca foi atendido pela clínica
+  Quando ele cria uma conta no portal com um e-mail não cadastrado
+  Então o sistema pede os dados do cadastro de paciente (RF-01)
+  E, após a confirmação do e-mail, o cadastro de "Bruno Lima" é criado e vinculado à conta
+
+Cenário: CPF já cadastrado com outro e-mail
+  Dado que existe um paciente com CPF 123.456.789-00 e e-mail "ana@exemplo.com"
+  Quando alguém se cadastra pelo portal com esse CPF e o e-mail "outro@exemplo.com"
+  Então o sistema não cria o cadastro
+  E mostra uma mensagem genérica orientando a procurar a recepção, sem revelar o cadastro existente
+  Quando a recepção altera o e-mail do cadastro para "outro@exemplo.com"
+  Então o paciente consegue criar a conta com "outro@exemplo.com", vinculada ao cadastro existente
+
+Cenário: E-mail que já tem conta
+  Dado que já existe uma conta no portal com o e-mail "ana@exemplo.com"
+  Quando alguém tenta criar outra conta com esse e-mail
+  Então o sistema mostra a mesma mensagem genérica do cadastro bem-sucedido
+  Mas não cria uma segunda conta
+
+Cenário: Login com credenciais inválidas
+  Dado que tenho conta no portal
+  Quando informo uma senha incorreta
+  Então o sistema nega o acesso sem indicar qual dado está errado
+
+Cenário: Recuperar senha
+  Dado que esqueci minha senha
+  Quando solicito a recuperação informando meu e-mail
+  Então recebo um e-mail com um link para definir uma nova senha
+  E, após definir a nova senha, consigo entrar no portal
+  E o link não pode ser usado novamente
+
+Cenário: Link de recuperação vencido
+  Dado que recebi um link de recuperação há mais de 1 hora
+  Quando tento usá-lo
+  Então o sistema informa que o link expirou e que devo solicitar um novo
+
+Cenário: E-mail não cadastrado
+  Quando solicito a recuperação com um e-mail que não está cadastrado
+  Então o sistema mostra a mesma mensagem de confirmação
+  Mas nenhum e-mail é enviado
 ```
 
 ## 8. Regras de negócio
@@ -327,9 +401,15 @@ Cenário: Alterar tarifa
 | RN-06 | O sistema apenas registra o pagamento; o processamento do cartão ocorre fora do sistema. | Clarificação com usuário |
 | RN-07 | Somente médicos leem e editam o conteúdo clínico; qualquer médico da instituição pode lê-lo. | Entrevista §2; Clarificação com usuário |
 | RN-08 | O paciente só pode cancelar ou reprogramar pelo portal respeitando a antecedência mínima configurada (padrão 24 h). | Clarificação com usuário |
-| RN-09 | O CPF identifica o paciente de forma única. | Entrevista §2 |
+| RN-09 | O CPF identifica o paciente de forma única. O e-mail também é único por paciente. O telefone pode ser compartilhado entre pacientes (ex.: membros da mesma família). | Entrevista §2; Clarificação com usuário (2026-11-24) |
 | RN-10 | A obra social é apenas um dado cadastral em v1; não altera o valor cobrado. | Clarificação com usuário |
 | RN-11 | Cobranças não são apagadas: correções são feitas por estorno com justificativa. | Entrevista §4 |
+| RN-12 | A idade do paciente é sempre derivada da data de nascimento e da data atual; não é informada manualmente. | Clarificação com usuário (2026-11-24) |
+| RN-13 | As respostas do portal em login, criação de conta e recuperação de senha não revelam se um e-mail está cadastrado nem qual credencial está incorreta. | Clarificação com usuário (2026-11-25) |
+| RN-14 | O e-mail é o dado de vínculo entre a conta do portal e o cadastro do paciente. Cada paciente tem no máximo uma conta, e o vínculo só ocorre após a confirmação do e-mail. | Clarificação com usuário (2026-11-25) |
+| RN-15 | O link de recuperação de senha vale por 1 hora e só pode ser usado uma vez. | Clarificação com usuário (2026-11-25) |
+| RN-16 | Uma pessoa sem cadastro pode se cadastrar como paciente pelo portal, informando os dados do RF-01. As regras de unicidade (RN-09) valem também no portal; se o CPF já pertencer a outro cadastro, o portal mostra uma mensagem genérica orientando a procurar a recepção, sem revelar o cadastro existente (RN-13). | Clarificação com usuário (2026-11-25) |
+| RN-17 | O e-mail de um cadastro de paciente existente só pode ser alterado pela recepção; o paciente não altera o e-mail pelo portal. | Clarificação com usuário (2026-11-25) |
 
 ## 9. Fluxos principais
 
@@ -370,12 +450,19 @@ stateDiagram-v2
 3. O sistema calcula a tarifa e o desconto e grava a cobrança.
 4. No fim do dia, a recepção gera o fechamento de caixa.
 
+### 9.4 Criação de conta e recuperação de senha no portal
+1. O paciente cria a conta informando e-mail e senha.
+2. O sistema envia um e-mail de confirmação; a mensagem exibida é sempre a mesma, exista ou não conta com esse e-mail (RN-13).
+3. Se não existir cadastro de paciente com esse e-mail, o paciente informa os dados do RF-01 (RN-16).
+4. Ao confirmar o e-mail, a conta é vinculada ao cadastro existente com o mesmo e-mail ou ao cadastro criado no passo 3 (RN-14).
+5. Para recuperar a senha, o paciente informa o e-mail e recebe um link válido por 1 hora e de uso único (RN-15).
+
 ## 10. Modelo de dados conceitual
 
 | Entidade | Atributos principais | Relações |
 |---|---|---|
-| Paciente | nome, sobrenome, CPF (único), telefone, e-mail, telefone de familiar, obra social, bairro, endereço | 1–N Turno, 1–N Evolução, 1–N Controle, 0–1 Conta de usuário |
-| Usuário | login, senha (hash), perfil (Administrador, Médico, Recepção, Paciente), ativo | 0–1 Médico, 0–1 Paciente |
+| Paciente | nome, sobrenome, sexo (Homem/Mulher), data de nascimento, idade (calculada), CPF (único), telefone, e-mail (único), telefone de familiar, obra social, bairro, endereço | 1–N Turno, 1–N Evolução, 1–N Controle, 0–1 Conta de usuário |
+| Usuário | login (e-mail, no caso do perfil Paciente), senha (hash), perfil (Administrador, Médico, Recepção, Paciente), ativo, e-mail confirmado | 0–1 Médico, 0–1 Paciente |
 | Médico | nome, especialidade, registro profissional | 1–N Agenda, 1–N Turno, 1–N Evolução |
 | Agenda | médico, dia da semana, horário início/fim, duração do turno | N–1 Médico |
 | Tipo de atendimento | nome, tarifa vigente | 1–N Turno |
@@ -390,24 +477,23 @@ stateDiagram-v2
 ## 11. Requisitos não funcionais
 
 > Os valores numéricos desta seção são **propostas técnicas** da equipe de produto e devem ser validados com a clínica (ver Perguntas em aberto nº 2).
+>
+> Os requisitos RNF-06 (desempenho), RNF-07 (disponibilidade) e RNF-08 (backup) foram removidos na revisão de 2026-11-25 (clarificação com o usuário). Os IDs não são reutilizados, para preservar a rastreabilidade com documentos derivados (ex.: TDD-001).
 
 | ID | Categoria | Requisito | Métrica / critério |
 |---|---|---|---|
-| RNF-01 | Segurança e privacidade | Dados pessoais e de saúde devem ser tratados conforme a LGPD (dados sensíveis), com acesso mínimo por perfil. | Conteúdo clínico acessível apenas ao perfil Médico (RF-06) |
+| RNF-01 | Segurança e privacidade | Dados pessoais e de saúde devem ter acesso mínimo por perfil. | Conteúdo clínico acessível apenas ao perfil Médico (RF-06) |
 | RNF-02 | Segurança | Senhas armazenadas com hash forte; comunicação somente por HTTPS. | 100 % do tráfego em TLS |
 | RNF-03 | Auditoria e rastreabilidade | Registrar quem consultou ou alterou histórias clínicas, cobranças e controles. | Log com usuário, ação e data/hora, retido por no mínimo 5 anos |
 | RNF-04 | Usabilidade | Interface mais intuitiva que a atual; tarefas principais em poucos passos. | Marcar um turno em ≤ 3 telas; lista de controles acessível em 1 clique da tela inicial |
 | RNF-05 | Usabilidade / acessibilidade | Portal do paciente responsivo (celular e computador). | Funcional em telas a partir de 360 px |
-| RNF-06 | Desempenho | Telas e buscas devem responder rapidamente no uso diário. | ≤ 2 s para 95 % das requisições |
-| RNF-07 | Disponibilidade | O portal do paciente deve estar disponível fora do horário da clínica. | ≥ 99 % mensal |
-| RNF-08 | Backup | Backups automáticos dos dados. | Diário, com restauração testada |
-| RNF-09 | Idioma | Idioma da interface e formato da moeda conforme a localidade da clínica (ver Perguntas em aberto nº 5). | — |
+| RNF-09 | Idioma | A interface deve estar em português do Brasil (pt-BR), com datas, números e telefones no formato brasileiro e valores monetários em real (R$). | 100 % dos textos da interface em pt-BR; datas no formato DD/MM/AAAA; valores no formato R$ 0.000,00 |
 
 ## 12. Integrações e dependências
 
 | Sistema / dependência | Tipo | Descrição |
 |---|---|---|
-| Serviço de e-mail | Externo | Recuperação de senha do portal (RF-24). |
+| Serviço de e-mail | Externo | Confirmação de e-mail na criação de conta (RF-21) e recuperação de senha do portal (RF-24). |
 | Provedor de mensagens (v2) | Externo | Avisos automáticos de controle; canal `[POR DEFINIR]` (RF-38). |
 | Maquininha de cartão | Fora do sistema | Pagamento processado externamente; o sistema só registra (RN-06). |
 
@@ -439,8 +525,11 @@ stateDiagram-v2
 |---|---|---|---|
 | Médicos não indicam o próximo controle na consulta, e a lista fica incompleta | Média | Alto | Campo de próximo controle visível no encerramento da consulta; indicador de consultas sem controle definido |
 | A recepção não trabalha a lista diariamente | Média | Alto | Lista na tela inicial da recepção; indicador de controles vencidos (RF-15, RF-35) |
+| Pacientes da mesma família compartilham o e-mail e são bloqueados pela regra de unicidade (RN-09) | Baixa | Médio | Cada paciente informa um e-mail próprio; o telefone pode ser compartilhado |
+| E-mail cadastrado pela recepção com erro impede o vínculo da conta do portal com o cadastro do paciente (RN-14) | Média | Médio | A recepção confirma o e-mail com o paciente no cadastro e a cada atendimento |
+| Paciente informa dados incorretos no autocadastro pelo portal (RN-16) | Média | Médio | A recepção revisa os dados cadastrais no primeiro atendimento |
 | Dados de contato desatualizados impedem o aviso | Alta | Médio | Contato de familiar obrigatório recomendado; revisão dos dados a cada atendimento |
-| Vazamento de dados de saúde | Baixa | Alto | Controle de acesso por perfil, auditoria, HTTPS, LGPD (RNF-01 a RNF-03) |
+| Vazamento de dados de saúde | Baixa | Alto | Controle de acesso por perfil, auditoria e HTTPS (RNF-01 a RNF-03) |
 | Baixa adesão dos pacientes ao portal | Média | Médio | Portal simples e responsivo; a recepção divulga o portal no atendimento |
 | Marcações simultâneas no mesmo horário (portal e recepção) | Média | Médio | Bloqueio de horário em nível de transação (RF-19) |
 
@@ -454,10 +543,11 @@ stateDiagram-v2
 | # | Pergunta | Responsável | Status |
 |---|---|---|---|
 | 1 | Quais são os objetivos numéricos das métricas de sucesso (seção 13)? Definir após medir o primeiro mês de uso. | Direção da clínica | Aberta |
-| 2 | Validar os valores propostos dos requisitos não funcionais (tempo de resposta, disponibilidade, retenção de logs). | Direção da clínica / equipe técnica | Aberta |
+| 2 | Validar os valores propostos dos requisitos não funcionais (retenção de logs de auditoria, número de telas para marcar um turno, largura mínima de tela do portal). | Direção da clínica / equipe técnica | Aberta (revisada em 2026-11-25: tempo de resposta e disponibilidade deixaram de ser requisitos) |
 | 3 | `[POR DEFINIR]` Canal dos avisos automáticos em v2 (e-mail, WhatsApp, SMS). | Direção da clínica | Aberta (v2) |
 | 4 | Como funcionará a cobertura de obras sociais em v2 (copagamento, faturamento ao convênio)? | Direção da clínica | Aberta (v2) |
-| 5 | Em que idioma será a interface e qual moeda será usada? A entrevista está em espanhol, mas o paciente é identificado por CPF (Brasil). | Direção da clínica | Aberta |
+| 5 | Em que idioma será a interface e qual moeda será usada? A entrevista está em espanhol, mas o paciente é identificado por CPF (Brasil). | Direção da clínica | Respondida (2026-11-24): interface em português do Brasil e moeda real (R$) (RNF-09). |
+| 6 | O que acontece quando uma pessoa cria conta no portal com um e-mail que não pertence a nenhum paciente cadastrado (nunca atendida pela clínica)? | Direção da clínica | Respondida (2026-11-25): o portal pede os dados do RF-01 e cria o cadastro de paciente (RF-21, RN-16). |
 
 ## 18. Glossário
 
@@ -471,4 +561,5 @@ stateDiagram-v2
 | Obra social | Plano ou convênio de saúde do paciente. |
 | Fechamento de caixa | Consolidação diária das cobranças por meio de pagamento. |
 | CPF | Documento de identificação do paciente, usado como identificador único. |
+| Idade atual | Idade do paciente calculada automaticamente a partir da data de nascimento. |
 | MoSCoW | Priorização: Must (obrigatório), Should (importante), Could (desejável), Won't (não nesta versão). |
