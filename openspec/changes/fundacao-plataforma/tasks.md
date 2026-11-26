@@ -4,10 +4,10 @@
 
 ## 1. Estrutura da solução backend
 
-- [ ] 1.1 Criar `backend/Clinica.slnx`, `Directory.Build.props` (net10.0, Nullable, TreatWarningsAsErrors) e `Directory.Packages.props`; verificar com `dotnet build backend/Clinica.slnx` sem warnings
-- [ ] 1.2 Criar `Clinica.Domain`, `Clinica.Application`, `Clinica.Infrastructure`, `Clinica.Api` e os 3 projetos de teste com as referências da regra de dependência (TDD §7.2); verificar que `Domain` não referencia nenhum projeto (teste de arquitetura ou checagem do `.csproj`)
-- [ ] 1.3 Adicionar `Domain/Shared` (`Entity`, `AggregateRoot`, `IDomainEvent`, `DomainException`) com testes unitários em `Clinica.Domain.Tests`; verificar `dotnet test` verde
-- [ ] 1.4 Adicionar `.editorconfig`, analyzers e `dotnet format`; verificar `dotnet format --verify-no-changes`
+- [x] 1.1 Criar `backend/Clinica.slnx`, `Directory.Build.props` (net10.0, Nullable, TreatWarningsAsErrors) e `Directory.Packages.props`; verificar com `dotnet build backend/Clinica.slnx` sem warnings
+- [x] 1.2 Criar `Clinica.Domain`, `Clinica.Application`, `Clinica.Infrastructure`, `Clinica.Api` e os 3 projetos de teste com as referências da regra de dependência (TDD §7.2); verificar que `Domain` não referencia nenhum projeto (teste de arquitetura ou checagem do `.csproj`)
+- [x] 1.3 Adicionar `Domain/Shared` (`Entity`, `AggregateRoot`, `IDomainEvent`, `DomainException`) com testes unitários em `Clinica.Domain.Tests`; verificar `dotnet test` verde
+- [x] 1.4 Adicionar `.editorconfig`, analyzers e `dotnet format`; verificar `dotnet format --verify-no-changes`
 
 ## 2. API base
 
