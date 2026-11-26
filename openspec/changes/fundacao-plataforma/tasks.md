@@ -11,35 +11,35 @@
 
 ## 2. API base
 
-- [ ] 2.1 Configurar `Program.cs` com `MapGroup("/api/v1")`, JSON camelCase, `TimeProvider` e `RelogioClinica` (`America/Sao_Paulo`); testar conversão UTC → local com `FakeTimeProvider`
-- [ ] 2.2 Implementar pipeline MediatR (`LoggingBehavior`, `ValidationBehavior` com FluentValidation, `TransactionBehavior`, `AuditoriaLeituraBehavior`) com testes unitários dos behaviors (spec `plataforma-api`)
-- [ ] 2.3 Implementar ProblemDetails com `code`, `errors` por campo e tratamento de exceção não tratada (500 com `traceId`); teste de integração para 400, 404, 422 e 500
-- [ ] 2.4 Configurar Serilog (JSON, enriquecimento, sem corpo/dados pessoais) e sink Seq em `Development`; teste que o log de login não contém e-mail nem senha
-- [ ] 2.5 Configurar OpenAPI + Swagger UI somente em `Development`; teste de integração por ambiente
-- [ ] 2.6 Implementar `/health` e `/health/ready` (API-46); teste com Testcontainers, incluindo banco indisponível → 503
-- [ ] 2.7 Documentar com `<summary>` os tipos públicos criados e escrever `backend/README.md` (como compilar, testar e variáveis de ambiente); verificar que os comandos documentados rodam
+- [x] 2.1 Configurar `Program.cs` com `MapGroup("/api/v1")`, JSON camelCase, `TimeProvider` e `RelogioClinica` (`America/Sao_Paulo`); testar conversão UTC → local com `FakeTimeProvider`
+- [x] 2.2 Implementar pipeline MediatR (`LoggingBehavior`, `ValidationBehavior` com FluentValidation, `TransactionBehavior`, `AuditoriaLeituraBehavior`) com testes unitários dos behaviors (spec `plataforma-api`)
+- [x] 2.3 Implementar ProblemDetails com `code`, `errors` por campo e tratamento de exceção não tratada (500 com `traceId`); teste de integração para 400, 404, 422 e 500
+- [x] 2.4 Configurar Serilog (JSON, enriquecimento, sem corpo/dados pessoais) e sink Seq em `Development`; teste que o log de login não contém e-mail nem senha
+- [x] 2.5 Configurar OpenAPI + Swagger UI somente em `Development`; teste de integração por ambiente
+- [x] 2.6 Implementar `/health` e `/health/ready` (API-46); teste com Testcontainers, incluindo banco indisponível → 503
+- [x] 2.7 Documentar com `<summary>` os tipos públicos criados e escrever `backend/README.md` (como compilar, testar e variáveis de ambiente); verificar que os comandos documentados rodam
 
 ## 3. Persistência e dados iniciais
 
-- [ ] 3.1 Criar `ClinicaDbContext` (schemas `clinica`/`identidade`, snake_case, UUID v7, `timestamptz`) e a infraestrutura de testes com Testcontainers PostgreSQL 17
-- [ ] 3.2 Criar a primeira migration (Identity renomeada, `sessoes`, `chaves_protecao_dados`, `parametros`, `auditoria`, índices do TDD §9.2) e o papel da aplicação sem `UPDATE`/`DELETE` em `auditoria`; teste de integração aplica a migration em banco vazio e confirma que `UPDATE` em `auditoria` é rejeitado
-- [ ] 3.3 Semear perfis e parâmetros (`HasData`) e implementar o seeder idempotente do administrador (`ADMIN_EMAIL`, `ADMIN_SENHA_INICIAL`); testes: primeira execução cria, reinício não duplica, sem variáveis só registra aviso
-- [ ] 3.4 Garantir que a API não aplica migrations ao iniciar; teste que a API sobe contra o esquema já migrado
+- [x] 3.1 Criar `ClinicaDbContext` (schemas `clinica`/`identidade`, snake_case, UUID v7, `timestamptz`) e a infraestrutura de testes com Testcontainers PostgreSQL 17
+- [x] 3.2 Criar a primeira migration (Identity renomeada, `sessoes`, `chaves_protecao_dados`, `parametros`, `auditoria`, índices do TDD §9.2) e o papel da aplicação sem `UPDATE`/`DELETE` em `auditoria`; teste de integração aplica a migration em banco vazio e confirma que `UPDATE` em `auditoria` é rejeitado
+- [x] 3.3 Semear perfis e parâmetros (`HasData`) e implementar o seeder idempotente do administrador (`ADMIN_EMAIL`, `ADMIN_SENHA_INICIAL`); testes: primeira execução cria, reinício não duplica, sem variáveis só registra aviso
+- [x] 3.4 Garantir que a API não aplica migrations ao iniciar; teste que a API sobe contra o esquema já migrado
 
 ## 4. Autenticação e sessão
 
-- [ ] 4.1 Configurar Identity (política de senha e bloqueio 5/15 min, DT-18), `ClinicaClaimsPrincipalFactory` e Data Protection em `chaves_protecao_dados`; testes de senha fraca e de bloqueio
-- [ ] 4.2 Implementar `SessaoTicketStore` (criação, leitura, renovação após metade do prazo, limite absoluto de 12 h, revogação) e os eventos 401/403 do cookie `__Host-clinica-sessao`; testes com `FakeTimeProvider` para inatividade e limite absoluto
-- [ ] 4.3 Implementar `ValidacaoAntiforgeryFilter` e o cookie `__Host-XSRF-TOKEN`; teste: escrita sem `X-XSRF-TOKEN` → 400 `seguranca.antiforgery_invalido`
-- [ ] 4.4 Implementar API-01, API-02 e API-03 (commands/queries, validadores, endpoints); testes de integração: login válido/ inválido/ usuário desativado, sessão 200/204, logout revoga e a requisição seguinte recebe 401
-- [ ] 4.5 Revogar sessões ao desativar usuário e ao trocar senha (serviço de domínio de acesso, sem endpoint público ainda); teste de revogação imediata
-- [ ] 4.6 Implementar JOB-02 no `BackgroundService` (limpeza de sessões > 30 dias, execução diária e na inicialização); teste de idempotência com `FakeTimeProvider`
+- [x] 4.1 Configurar Identity (política de senha e bloqueio 5/15 min, DT-18), `ClinicaClaimsPrincipalFactory` e Data Protection em `chaves_protecao_dados`; testes de senha fraca e de bloqueio
+- [x] 4.2 Implementar `SessaoTicketStore` (criação, leitura, renovação após metade do prazo, limite absoluto de 12 h, revogação) e os eventos 401/403 do cookie `__Host-clinica-sessao`; testes com `FakeTimeProvider` para inatividade e limite absoluto
+- [x] 4.3 Implementar `ValidacaoAntiforgeryFilter` e o cookie `__Host-XSRF-TOKEN`; teste: escrita sem `X-XSRF-TOKEN` → 400 `seguranca.antiforgery_invalido`
+- [x] 4.4 Implementar API-01, API-02 e API-03 (commands/queries, validadores, endpoints); testes de integração: login válido/ inválido/ usuário desativado, sessão 200/204, logout revoga e a requisição seguinte recebe 401
+- [x] 4.5 Revogar sessões ao desativar usuário e ao trocar senha (serviço de domínio de acesso, sem endpoint público ainda); teste de revogação imediata
+- [x] 4.6 Implementar JOB-02 no `BackgroundService` (limpeza de sessões > 30 dias, execução diária e na inicialização); teste de idempotência com `FakeTimeProvider`
 
 ## 5. Auditoria
 
-- [ ] 5.1 Implementar `AuditoriaInterceptor` (criação/alteração com colunas alteradas em JSONB) registrado para `parametros` nesta fase; teste de integração com alteração de parâmetro
-- [ ] 5.2 Registrar `Login` e `LoginFalho` (usuário, perfil, IP, `correlation_id`) nos handlers de login; teste: login do admin semeado gera linha `Login`
-- [ ] 5.3 Cobrir `AuditoriaLeituraBehavior` com uma query de teste marcada com `[AuditarLeitura]` e verificar a linha `Leitura`
+- [x] 5.1 Implementar `AuditoriaInterceptor` (criação/alteração com colunas alteradas em JSONB) registrado para `parametros` nesta fase; teste de integração com alteração de parâmetro
+- [x] 5.2 Registrar `Login` e `LoginFalho` (usuário, perfil, IP, `correlation_id`) nos handlers de login; teste: login do admin semeado gera linha `Login`
+- [x] 5.3 Cobrir `AuditoriaLeituraBehavior` com uma query de teste marcada com `[AuditarLeitura]` e verificar a linha `Leitura`
 
 ## 6. Frontend base
 
