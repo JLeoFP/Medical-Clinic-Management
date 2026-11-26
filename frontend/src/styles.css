@@ -1,0 +1,29 @@
+@import 'tailwindcss';
+
+/* Tokens do design (DT-46). Contraste AA: texto principal sobre fundo >= 4.5:1. */
+@theme {
+  --color-marca-50: #eff6ff;
+  --color-marca-600: #1d4ed8;
+  --color-marca-700: #1e40af;
+  --color-superficie: #ffffff;
+  --color-fundo: #f1f5f9;
+  --color-texto: #0f172a;
+  --color-texto-suave: #475569;
+  --color-borda: #cbd5e1;
+  --color-perigo: #b91c1c;
+  --color-sucesso: #15803d;
+  --font-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --radius-campo: 0.5rem;
+}
+
+html {
+  background-color: var(--color-fundo);
+  color: var(--color-texto);
+  font-family: var(--font-sans);
+}
+
+/* Foco sempre visível para navegação por teclado (RNF-09). */
+:focus-visible {
+  outline: 3px solid var(--color-marca-600);
+  outline-offset: 2px;
+}
