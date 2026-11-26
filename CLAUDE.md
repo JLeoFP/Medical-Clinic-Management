@@ -33,3 +33,17 @@ Não avançar para a etapa seguinte sem que a anterior exista e esteja coerente 
    - Uma branch por change (ex.: `feat/<nome-da-change>`, `docs/<nome>`), nunca commitar direto na `main`.
    - Abrir o PR usando o modelo `.github/pull_request_template.md`, preenchendo todas as seções (rastreabilidade PRD/TDD/SDD, testes e checklist).
    - O PR só é aberto com build e testes passando e com as tarefas da change marcadas como concluídas.
+
+### Labels informativas e contextuais
+
+- Recomenda-se aplicar labels que ajudem a identificar **tipo**, **área afetada** e, quando relevante, **contexto ou risco** da mudança.
+- Consultar primeiro as labels disponíveis no repositório e reutilizar sua nomenclatura. Exemplos conceituais: tipo (`documentação`, `funcionalidade`, `correção`), área (`frontend`, `backend`, `infraestrutura`) e contexto (`acessibilidade`, `segurança`, `migração`). Esses exemplos não pressupõem labels já cadastradas.
+- Selecionar apenas labels sustentadas pelo conteúdo do PR; evitar excesso, redundância ou classificações genéricas que não ajudem na revisão. Usar labels de prioridade, risco ou status somente quando houver critério definido no projeto.
+- Não criar, renomear ou excluir labels globais apenas para adequá-las a um PR sem autorização. Se faltar uma classificação útil, sugeri-la na descrição ou ao responsável pelo repositório.
+- Reavaliar as labels se o escopo do PR mudar. Labels complementam a descrição e a rastreabilidade; não substituem evidências, revisão ou conclusão de tarefas.
+
+## Commits
+
+- Dividir as mudanças em commits pequenos, atômicos e focados, agrupando arquivos por unidade lógica ou tarefa. Evitar misturar documentação, refatorações e funcionalidades sem relação.
+- Cada commit deve ser verificável e ter uma mensagem descritiva. Não fazer commit de trabalho incompleto que não passe nas verificações necessárias.
+- Os commits devem ser escritos em português brasileiro, seguindo o padrão [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/).
