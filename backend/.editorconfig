@@ -27,6 +27,7 @@ dotnet_diagnostic.CA1062.severity = none
 # Convenção do projeto: CancellationToken se chama "ct"; log de duração calculado de forma barata.
 dotnet_diagnostic.CA1725.severity = none
 dotnet_diagnostic.CA1873.severity = none
+dotnet_diagnostic.CA1305.severity = none
 
 [tests/**.cs]
 # Nomes de teste em português com sublinhados descrevem o cenário.

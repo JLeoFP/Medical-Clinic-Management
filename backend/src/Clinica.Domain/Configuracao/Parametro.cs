@@ -1,3 +1,4 @@
+using Clinica.Domain.Auditoria;
 using Clinica.Domain.Shared;
 
 namespace Clinica.Domain.Configuracao;
@@ -5,7 +6,7 @@ namespace Clinica.Domain.Configuracao;
 /// <summary>
 /// Parâmetro de configuração da clínica, identificado por chave (TDD §9.2, <c>parametros</c>).
 /// </summary>
-public sealed class Parametro
+public sealed class Parametro : IAuditavel
 {
     /// <summary>Chave do parâmetro de janela da agenda, em meses.</summary>
     public const string JanelaAgendaMeses = "janela_agenda_meses";
