@@ -53,13 +53,13 @@
 ## 7. Ambiente local e CI
 
 - [x] 7.1 Criar Dockerfiles de `api` e `web` (apenas desenvolvimento) e `docker-compose.yml` (postgres:17, mailpit, seq, api, web) com healthchecks e `.env.example`; verificar `docker compose up` com `/health/ready` 200 e confirmar que `.env` está no `.gitignore`
-- [ ] 7.2 Criar `.github/workflows/ci.yml` (restore/build, `dotnet format --verify-no-changes`, testes com cobertura, `npm ci`, lint, Vitest, build) e o gate de 80 % em Domain/Application; verificar execução verde no PR e falha simulada com cobertura reduzida
+- [x] 7.2 Criar `.github/workflows/ci.yml` (restore/build, `dotnet format --verify-no-changes`, testes com cobertura, `npm ci`, lint, Vitest, build) e o gate de 80 % em Domain/Application; verificar execução verde no PR e falha simulada com cobertura reduzida
 - [x] 7.3 Escrever um teste de fumaça Playwright (login do admin semeado + recarga mantém a sessão + escrita sem token rejeitada) contra o compose; verificar execução local
 - [x] 7.4 Atualizar o `README.md` raiz (pré-requisitos, subir o ambiente, rodar testes) e a matriz de rastreabilidade do TDD §21 marcando a Fase 0
 
 ## 8. Verificação de integração
 
-- [ ] 8.1 Verificar o critério de conclusão do TDD §22.2: admin semeado entra na SPA, a sessão sobrevive à recarga, escrita sem `X-XSRF-TOKEN` é rejeitada, o CI está verde e o login aparece na auditoria
+- [x] 8.1 Verificar o critério de conclusão do TDD §22.2: admin semeado entra na SPA, a sessão sobrevive à recarga, escrita sem `X-XSRF-TOKEN` é rejeitada, o CI está verde e o login aparece na auditoria
 
 ## Workflow follow-up
 
