@@ -54,6 +54,8 @@ services:
       ADMIN_SENHA_INICIAL: ${ADMIN_SENHA_INICIAL:-}
       MediatR__LicenseKey: ${MEDIATR_LICENSE_KEY:-}
       Seq__ServerUrl: http://seq:5341
+      NewRelic__ApiKey: ${NEWRELIC_API_KEY:-}
+      LuckyPenny__ApiKey: ${LUCKYPENNY_API_KEY:-}
     depends_on:
       migrador:
         condition: service_completed_successfully
