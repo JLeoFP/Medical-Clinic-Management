@@ -16,7 +16,7 @@ import { Campo } from '../../shared/ui/campo';
     <main class="mx-auto mt-16 max-w-sm rounded-campo bg-superficie p-6 shadow">
       <h1 class="mb-4 text-2xl font-semibold">Entrar</h1>
       <form [formRoot]="formulario" class="flex flex-col gap-4" novalidate>
-        <app-campo para="email" rotulo="E-mail" [erros]="mensagens(formulario.email().errors())">
+        <app-campo para="email" rotulo="E-mail" [erros]="mensagens(formulario.email())">
           <input
             id="email"
             type="email"
@@ -26,7 +26,7 @@ import { Campo } from '../../shared/ui/campo';
             class="rounded-campo border border-borda p-2"
           />
         </app-campo>
-        <app-campo para="senha" rotulo="Senha" [erros]="mensagens(formulario.senha().errors())">
+        <app-campo para="senha" rotulo="Senha" [erros]="mensagens(formulario.senha())">
           <input
             id="senha"
             type="password"
@@ -88,7 +88,13 @@ export class Entrar {
     },
   );
 
-  protected mensagens(erros: readonly { message?: string }[]): string[] {
-    return erros.map((e) => e.message ?? '').filter(Boolean);
+  /** Mensagens do campo; só aparecem depois que o usuário interage ou tenta enviar. */
+  protected mensagens(estado: { touched(): boolean; errors(): readonly { message?: string }[] }): string[] {
+    return estado.touched()
+      ? estado
+          .errors()
+          .map((e) => e.message ?? '')
+          .filter(Boolean)
+      : [];
   }
 }

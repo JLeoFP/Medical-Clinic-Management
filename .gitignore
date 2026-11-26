@@ -14,3 +14,6 @@ frontend/.angular/
 # IDE
 .vs/
 .idea/
+frontend/test-results/
+frontend/playwright-report/
+cobertura/

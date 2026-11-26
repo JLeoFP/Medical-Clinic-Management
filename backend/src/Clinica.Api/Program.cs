@@ -32,6 +32,17 @@ builder.Services.AddApi();
 
 var app = builder.Build();
 
+// Somente desenvolvimento local em http://localhost: os cookies __Host- exigem Secure e o antiforgery recusa requisição
+// não-HTTPS; os navegadores aceitam cookies Secure em localhost. Em produção o esquema vem do proxy (Fase 5).
+if (app.Configuration.GetValue<bool>("Seguranca:TratarComoHttps"))
+{
+    app.Use((contexto, proximo) =>
+    {
+        contexto.Request.Scheme = "https";
+        return proximo(contexto);
+    });
+}
+
 app.UseMiddleware<CorrelacaoMiddleware>();
 app.UseExceptionHandler();
 app.UseStatusCodePages();
