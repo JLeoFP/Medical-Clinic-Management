@@ -1,0 +1,16 @@
+# .NET
+bin/
+obj/
+*.user
+TestResults/
+coverage/
+# Node / Angular
+node_modules/
+frontend/dist/
+frontend/.angular/
+# Segredos e ambiente local
+.env
+*.local.json
+# IDE
+.vs/
+.idea/
