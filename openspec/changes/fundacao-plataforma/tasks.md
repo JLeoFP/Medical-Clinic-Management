@@ -43,11 +43,11 @@
 
 ## 6. Frontend base
 
-- [ ] 6.1 Criar o app Angular 22 zoneless em `frontend/` com Tailwind 4 (tokens em `@theme`), CDK, `@lucide/angular`, ESLint + Prettier e Vitest; verificar `ng build`, `ng lint` e `ng test`
-- [ ] 6.2 Configurar locale pt-BR (`LOCALE_ID`, `DEFAULT_CURRENCY_CODE`), pipes `cpf`, `telefone`, `idade` e validadores de Signal Forms (CPF, telefone, data não futura); testes Vitest incluindo `18/11/2026` e `R$ 1.234,50`
-- [ ] 6.3 Implementar `AuthStore`, `provideAppInitializer` chamando API-02, `sessaoInterceptor`, `errorInterceptor`, `correlationInterceptor` e `withXsrfConfiguration`; testes Vitest dos interceptors (401, ProblemDetails, cabeçalhos) e do `AuthStore`
-- [ ] 6.4 Implementar `shared/ui` base (botão, campo, avisos com `LiveAnnouncer`, diálogo, tabela, paginação) com testes de acessibilidade básica (rótulos, foco)
-- [ ] 6.5 Implementar rotas `/entrar` e `/app` (lazy, `canMatch`, layout, `/app/inicio` vazio) com `returnUrl`; testes Vitest de guard e do formulário de login (erro 401 mantém o e-mail)
+- [x] 6.1 Criar o app Angular 22 zoneless em `frontend/` com Tailwind 4 (tokens em `@theme`), CDK, `@lucide/angular`, ESLint + Prettier e Vitest; verificar `ng build`, `ng lint` e `ng test`
+- [x] 6.2 Configurar locale pt-BR (`LOCALE_ID`, `DEFAULT_CURRENCY_CODE`), pipes `cpf`, `telefone`, `idade` e validadores de Signal Forms (CPF, telefone, data não futura); testes Vitest incluindo `18/11/2026` e `R$ 1.234,50`
+- [x] 6.3 Implementar `AuthStore`, `provideAppInitializer` chamando API-02, `sessaoInterceptor`, `errorInterceptor`, `correlationInterceptor` e `withXsrfConfiguration`; testes Vitest dos interceptors (401, ProblemDetails, cabeçalhos) e do `AuthStore`
+- [x] 6.4 Implementar `shared/ui` base (botão, campo, avisos com `LiveAnnouncer`, diálogo, tabela, paginação) com testes de acessibilidade básica (rótulos, foco)
+- [x] 6.5 Implementar rotas `/entrar` e `/app` (lazy, `canMatch`, layout, `/app/inicio` vazio) com `returnUrl`; testes Vitest de guard e do formulário de login (erro 401 mantém o e-mail)
 - [ ] 6.6 Configurar proxy do `ng serve` para a API (mesma origem) e escrever `frontend/README.md`; verificar login manual contra a API local
 
 ## 7. Ambiente local e CI
