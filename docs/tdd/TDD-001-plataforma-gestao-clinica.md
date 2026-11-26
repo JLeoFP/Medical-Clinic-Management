@@ -1863,6 +1863,16 @@ Não há backup automático (DT-43): o RNF-08 foi removido do PRD e o ambiente c
 | RN-16, RN-17 | CMP-01, CMP-02 | API-14, API-48 | pacientes, usuarios | Integração: autocadastro, CPF duplicado genérico, alteração de e-mail pela Recepção com vínculo |
 | RNF-01 a RNF-05, RNF-09 | Ver seção 3 | — | auditoria (RNF-03) | Integração matriz 13.2 e auditoria; E2E 360 px |
 
+### 21.1 Fase 0 concluída (`v0.1.0`, change `fundacao-plataforma`)
+
+| Requisito | Entregue na Fase 0 | Testes |
+|---|---|---|
+| RF-36 (parcial) | Perfis semeados; policies por perfil; API-01 a API-03; guards da SPA | Integração de autenticação; Vitest de guard e login; E2E de fumaça |
+| RF-37 (parcial) | Revogação imediata de sessões ao desativar usuário e trocar senha (sem endpoint público) | Integração `GestaoAcesso` |
+| RNF-02 | Cookie `__Host-clinica-sessao`, sessão em `sessoes`, anti-CSRF, política de senha e bloqueio | Integração (expiração 30 min / 12 h, bloqueio 5/15 min, `X-XSRF-TOKEN`) |
+| RNF-03 (base) | `AuditoriaInterceptor`, `AuditoriaLeituraBehavior`, login e falha de login; tabela somente inserção | Integração (papel sem `UPDATE`/`DELETE`) |
+| RNF-09 (base) | `shared/ui` acessível, foco visível, locale pt-BR | Vitest de acessibilidade básica e formatos |
+
 ## 22. Roadmap de implementação
 
 > Ordem de construção derivada do plano de entregas do PRD (§14) e das dependências técnicas entre componentes. As fases não têm datas: o prazo depende do calendário do TCC. A única restrição temporal é a **Fase 5**, que deve começar perto da defesa por causa da validade dos créditos do AWS Free plan (RT-02, DT-41). Cada incremento pode virar um change do OpenSpec (`/opsx:propose <nome>`).
