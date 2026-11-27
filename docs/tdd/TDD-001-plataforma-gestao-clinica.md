@@ -109,6 +109,10 @@ A plataforma é uma aplicação web composta por uma API REST em **.NET 10** (DT
 | DT-45 | SEG | ASP.NET Core Identity com cookie de autenticação, sessões no servidor (`ITicketStore` no PostgreSQL) e anti-CSRF; RBAC por perfil | Aceita |
 | DT-46 | FRW | Angular CDK + componentes próprios em Tailwind CSS 4 + Lucide Icons (`@lucide/angular`); sem Angular Material e sem SCSS | Aceita |
 | DT-47 | FRW | Formulários com Signal Forms (`@angular/forms/signals`) | Aceita |
+| DT-48 | SEG | Administrador não pode desativar a própria conta | Aceita |
+| DT-49 | DAT | Busca de pacientes por prefixo, com mínimo de caracteres | Aceita |
+| DT-50 | ARQ | Eventos de domínio publicados na transação, antes do commit | Aceita |
+| DT-51 | DAT | Data-base e limites do prazo do controle futuro | Aceita |
 
 ## 5. Visão geral da arquitetura
 
@@ -1843,6 +1847,85 @@ Não há backup automático (DT-43): o RNF-08 foi removido do PRD e o ambiente c
 **Justificativa:** API estável no Angular 22, coerente com zoneless e signals (DT-07, DT-09); validação declarada uma única vez por modelo e estado do formulário lido como signals no template.
 
 **Consequências:** (+) menos código de ligação e nenhum `Observable` nos formulários; (+) validadores puros e testáveis com Vitest. (−) API mais recente que Reactive Forms, com menos exemplos de terceiros; (−) validadores de CPF/telefone/data precisam ser escritos no formato de regra do Signal Forms.
+
+### DT-48: Administrador não pode desativar a própria conta
+| Campo | Valor |
+|---|---|
+| **Categoria** | SEG |
+| **Estado** | Aceita |
+| **Data** | 2026-11-27 |
+| **Requisitos relacionados** | RF-37, RNF-02 |
+| **Fonte** | Clarificação com usuário (2026-11-27); suposição registrada no `design.md` da change correspondente |
+
+**Contexto:** A desativação de usuário revoga todas as sessões (DT-45); um Administrador poderia se bloquear e deixar o sistema sem acesso administrativo. O PRD não trata o caso.
+
+**Opções consideradas:** 1. **Bloquear a autodesativação**; 2. Bloquear apenas o último Administrador ativo; 3. Sem restrição.
+
+**Decisão:** opção 1. API-10 responde 422 `usuario.autodesativacao` quando o usuário-alvo é o da sessão. Origem: change `cadastros-base`.
+
+**Justificativa:** regra simples, sem consulta de contagem de administradores e sem condição de corrida; reversível por outro Administrador.
+
+**Consequências:** (+) evita perda do acesso administrativo; (−) para sair, o Administrador precisa de outro Administrador (o seed garante o primeiro).
+
+
+### DT-49: Busca de pacientes por prefixo, com mínimo de caracteres
+| Campo | Valor |
+|---|---|
+| **Categoria** | DAT |
+| **Estado** | Aceita |
+| **Data** | 2026-11-27 |
+| **Requisitos relacionados** | RF-03, RNF-01 |
+| **Fonte** | Clarificação com usuário (2026-11-27); suposição registrada no `design.md` da change correspondente |
+
+**Contexto:** A busca por nome, sobrenome ou CPF (RF-03) precisa ser eficiente em PostgreSQL sem extensões e evitar varreduras amplas sobre dados pessoais.
+
+**Opções consideradas:** 1. **Prefixo com índice `varchar_pattern_ops`**; 2. "Contém" com `pg_trgm`; 3. Busca de texto completo.
+
+**Decisão:** opção 1. Termo só com dígitos (≥ 3) busca CPF por prefixo, com ou sem máscara; termo textual (≥ 2 caracteres) busca prefixo case-insensitive em `lower(nome)` e `lower(sobrenome)`; termo vazio lista tudo paginado por nome (máx. 100 por página, DT-39). Origem: change `pacientes`.
+
+**Justificativa:** usa o índice já previsto no §9.2, sem extensão nem custo adicional, e atende ao RF-03.
+
+**Consequências:** (+) simples e rápida; (−) não encontra "contém" (ex.: sobrenome composto no meio); revisitar com `pg_trgm` se a Recepção sentir falta.
+
+
+### DT-50: Eventos de domínio publicados na transação, antes do commit
+| Campo | Valor |
+|---|---|
+| **Categoria** | ARQ |
+| **Estado** | Aceita |
+| **Data** | 2026-11-27 |
+| **Requisitos relacionados** | RF-10, RF-13, RF-19 |
+| **Fonte** | Clarificação com usuário (2026-11-27); suposição registrada no `design.md` da change correspondente |
+
+**Contexto:** Os eventos `TurnoAgendado`, `TurnoCancelado` e `TurnoAtendido` precisam atualizar o controle futuro (CMP-05) de forma consistente com o turno (CMP-04).
+
+**Opções consideradas:** 1. **Publicação síncrona antes do commit, na mesma transação**; 2. Publicação após o commit (consistência eventual); 3. Outbox.
+
+**Decisão:** opção 1. Um despachante (MediatR `INotification`) executa os handlers dentro da `TransactionBehavior` antes do commit; falha em qualquer handler desfaz a operação inteira. Handlers não podem fazer I/O externo (e-mail, HTTP); efeitos externos ficam fora da transação. Origem: changes `agenda-turnos` e `controles-futuros`.
+
+**Justificativa:** garante que turno e controle nunca divergem, sem a infraestrutura de uma outbox (DT-40: sem mensageria na v1).
+
+**Consequências:** (+) atomicidade e simplicidade; (−) acoplamento transacional entre módulos e transações um pouco mais longas; um handler com defeito bloqueia a marcação de turnos.
+
+
+### DT-51: Data-base e limites do prazo do controle futuro
+| Campo | Valor |
+|---|---|
+| **Categoria** | DAT |
+| **Estado** | Aceita |
+| **Data** | 2026-11-27 |
+| **Requisitos relacionados** | RF-07, RF-08, RN-02 |
+| **Fonte** | Clarificação com usuário (2026-11-27); suposição registrada no `design.md` da change correspondente |
+
+**Contexto:** O PRD define o prazo ("em N meses/semanas") ou data aproximada, mas não a data-base do cálculo nem os limites do prazo.
+
+**Opções consideradas:** 1. **Data local do registro da evolução**; 2. Data do turno de origem.
+
+**Decisão:** opção 1. Data prevista = data local (`America/Sao_Paulo`, DT-26) do registro da evolução + `n` meses (`AddMonths`) ou `7·n` dias, com `n` de 1 a 60; `dataAproximada` deve ser maior ou igual a hoje; prazo e data aproximada são mutuamente exclusivos. Origem: changes `prontuario` e `controles-futuros`.
+
+**Justificativa:** a evolução é registrada no dia do atendimento (ex.: 2026-11-18 + 6 meses = 2027-05-18, HU-01), então as duas opções coincidem na prática, e a primeira não depende do turno (a evolução pode não ter turno).
+
+**Consequências:** (+) cálculo independente do turno; (−) registro tardio da evolução desloca a data prevista.
 
 ## 21. Matriz de rastreabilidade
 
