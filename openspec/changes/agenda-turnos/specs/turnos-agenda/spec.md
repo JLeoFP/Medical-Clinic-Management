@@ -40,7 +40,7 @@ O sistema SHALL permitir a Administrador e Recepção marcar um turno informando
 
 #### Scenario: Médico ou tipo inativo
 - **WHEN** o médico ou o tipo de atendimento está inativo
-- **THEN** a resposta é 422 com o `code` correspondente e nenhum turno é criado
+- **THEN** a resposta é 422 com `code` `turno.medico_inativo` ou `turno.tipo_inativo` e nenhum turno é criado
 
 #### Scenario: Médico não marca turno
 - **WHEN** um usuário Médico tenta marcar um turno
