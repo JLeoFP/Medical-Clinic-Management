@@ -59,6 +59,9 @@ cd backend
 dotnet run --project src/Clinica.Api
 ```
 
+No VS Code, o composto **API + Angular** (F5) executa a API com essas variáveis lidas do `.env` da raiz (`envFile`);
+nesse arquivo o valor de `ConnectionStrings__Clinica` fica sem aspas.
+
 ## Migrations
 
 A API **nunca** aplica migrations ao iniciar. Aplique-as com o papel dono do banco:
