@@ -34,6 +34,10 @@ docker compose up -d --build  # postgres, mailpit, seq, migrador, api e web
 | Mailpit | http://localhost:8025 |
 | Seq (logs) | http://localhost:5341 |
 
+### Pelo VS Code (depuração)
+
+Com o Docker ligado e o `.env` preenchido (inclui `ConnectionStrings__Clinica`), abra **Run and Debug**, escolha o composto **API + Angular** e pressione F5. Ele sobe o Postgres, a API em http://localhost:5071 (depurável) e a SPA em http://localhost:4200. Escolher apenas "API (.NET)" não inicia o Angular. Não rode junto com os serviços `api`/`web` do compose (mesmas portas); as migrations continuam manuais (`backend/README.md`).
+
 Entre com `ADMIN_EMAIL` / `ADMIN_SENHA_INICIAL` do `.env` (troca de senha obrigatória no primeiro acesso).
 
 # Testes
