@@ -1,0 +1,40 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "banco: subir postgres",
+      "type": "shell",
+      "command": "docker compose up -d --wait postgres",
+      "problemMatcher": []
+    },
+    {
+      "label": "api: compilar",
+      "type": "process",
+      "command": "dotnet",
+      "args": ["build", "${workspaceFolder}/backend/src/Clinica.Api/Clinica.Api.csproj"],
+      "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "frontend: ng serve",
+      "type": "shell",
+      "command": "npm start",
+      "options": { "cwd": "${workspaceFolder}/frontend" },
+      "isBackground": true,
+      "problemMatcher": {
+        "owner": "angular",
+        "pattern": { "regexp": "^$" },
+        "background": {
+          "activeOnStart": true,
+          "beginsPattern": "Building|Application bundle generation",
+          "endsPattern": "Local:|Application bundle generation (complete|failed)"
+        }
+      }
+    },
+    {
+      "label": "api: preparar",
+      "dependsOn": ["banco: subir postgres", "api: compilar"],
+      "dependsOrder": "sequence",
+      "problemMatcher": []
+    }
+  ]
+}
