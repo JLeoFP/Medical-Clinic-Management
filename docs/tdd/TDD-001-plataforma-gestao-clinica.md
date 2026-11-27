@@ -724,6 +724,33 @@ Content-Type: application/problem+json
   "desconto": 20.00, "valorFinal": 180.00, "registradaEm": "2026-11-24T14:05:00Z" }
 ```
 
+### 10.4 Catálogo de códigos de erro
+
+Códigos `code` do ProblemDetails (DT-39) introduzidos pela Fase 1. Erros de validação de campo (400) não têm código e usam `errors` por campo.
+
+| Código | Status | Origem | Descrição |
+|---|---|---|---|
+| `usuario.email_duplicado` | 409 | API-08, API-09 | E-mail já usado por outra conta |
+| `usuario.autodesativacao` | 422 | API-10 | Administrador tentou desativar a própria conta |
+| `medico.usuario_invalido` | 422 | API-24, API-25 | Usuário sem perfil Médico ou já vinculado a outro médico |
+| `medico.registro_duplicado` | 409 | API-24, API-25 | Registro profissional já cadastrado |
+| `medico.nao_cadastrado` | 422 | API-16 | Usuário Médico sem médico vinculado |
+| `agenda.faixas_sobrepostas` | 422 | API-27 | Faixas sobrepostas no mesmo dia da semana |
+| `tipo_atendimento.nome_duplicado` | 409 | API-37 | Nome de tipo de atendimento já existente |
+| `paciente.cpf_duplicado` | 409 | API-12, API-14 | CPF já cadastrado; a resposta identifica o paciente existente (somente uso interno) |
+| `paciente.email_duplicado` | 409 | API-12, API-14 | E-mail já em uso por outro paciente |
+| `turno.fora_da_janela` | 422 | API-28, API-30, API-31 | Data além de hoje + janela de agenda |
+| `turno.horario_invalido` | 422 | API-30, API-31 | Início não coincide com um slot da agenda do médico |
+| `turno.no_passado` | 422 | API-30, API-31 | Início anterior ao instante atual |
+| `turno.medico_inativo` | 422 | API-30, API-31 | Médico inativo |
+| `turno.tipo_inativo` | 422 | API-30 | Tipo de atendimento inativo |
+| `turno.horario_ocupado` | 409 | API-30, API-31 | Horário já ocupado (índice único parcial, RF-19) |
+| `turno.status_invalido` | 422 | API-31, API-32 | Operação não permitida no status atual do turno |
+| `turno.antecedencia_insuficiente` | 422 | API-35, API-36 | Antecedência mínima do paciente (Fase 2, RN-08) |
+| `evolucao.turno_invalido` | 422 | API-16 | Turno de outro paciente ou médico, ou fora do status `Agendado` |
+| `controle.transicao_invalida` | 422 | API-20, API-21 | Transição fora da máquina de estados |
+| `controle.nao_vinculavel` | 422 | API-30 | `controleId` de outro paciente ou fora de `NaJanela`/`Contatado` |
+
 ## 11. Fluxos e sequências
 
 ### 11.1 Registrar consulta com próximo controle (HU-01)
@@ -1882,7 +1909,7 @@ Não há backup automático (DT-43): o RNF-08 foi removido do PRD e o ambiente c
 | Fase | Nome | Fase do PRD | Requisitos | Tag (DT-38) | Change OpenSpec sugerido |
 |---|---|---|---|---|---|
 | 0 | Fundação técnica | — | RF-36 (parcial), RNF-02, RNF-03 (base), RNF-09 | `v0.1.0` | `fundacao-plataforma` |
-| 1 | MVP — Cadastros, agenda, prontuário e controles | MVP v1.0 | RF-01 a RF-20, RF-36, RF-37, HU-01 a HU-05 | `v1.0.0` | `cadastros-base`, `pacientes`, `agenda-turnos`, `prontuario-controles` |
+| 1 | MVP — Cadastros, agenda, prontuário e controles | MVP v1.0 | RF-01 a RF-20, RF-36, RF-37, HU-01 a HU-05 | `v1.0.0` | `cadastros-base`, `pacientes`, `agenda-turnos`, `prontuario`, `controles-futuros` |
 | 2 | Portal do paciente | v1.1 | RF-21 a RF-24, RN-13 a RN-17, HU-06, HU-07, HU-11 | `v1.1.0` | `portal-paciente` |
 | 3 | Cobrança, caixa e relatórios | v1.2 | RF-25 a RF-35, HU-08 a HU-10 | `v1.2.0` | `cobranca-caixa-relatorios` |
 | 4 | Endurecimento e preparação do deploy | — | RNF-01 a RNF-05 (verificação final) | `v1.2.x` | `preparacao-deploy` |
@@ -1895,9 +1922,10 @@ flowchart LR
   F1a --> F1b[1b Pacientes]
   F1a --> F1c[1c Agenda e turnos]
   F1b --> F1c
-  F1c --> F1d[1d Prontuário e controles]
-  F1d --> F2[Fase 2<br/>Portal]
-  F1d --> F3[Fase 3<br/>Cobrança e relatórios]
+  F1c --> F1d[1d-i Prontuário]
+  F1d --> F1e[1d-ii Controles futuros]
+  F1e --> F2[Fase 2<br/>Portal]
+  F1e --> F3[Fase 3<br/>Cobrança e relatórios]
   F2 --> F4[Fase 4<br/>Endurecimento]
   F3 --> F4
   F4 --> F5[Fase 5<br/>AWS e defesa]
@@ -1917,14 +1945,15 @@ As fases 2 e 3 dependem apenas da Fase 1 e podem ser feitas em qualquer ordem. A
 - **Critério de conclusão:** o admin semeado faz login na SPA, a sessão sobrevive ao recarregar a página, escritas sem `X-XSRF-TOKEN` são rejeitadas, o CI fica verde e o login aparece na auditoria.
 
 ### 22.3 Fase 1 — MVP v1.0 (`v1.0.0`)
-Dividida em quatro incrementos, cada um com seus testes:
+Dividida em cinco incrementos (o 1d do plano original foi dividido em 1d-i e 1d-ii), cada um com seus testes:
 
 | Incremento | Escopo | Componentes / endpoints / tabelas | Testes que fecham o incremento |
 |---|---|---|---|
 | **1a Cadastros base** | Usuários internos e perfis (RF-36, RF-37); médicos e agendas (RF-16); parâmetros (RF-17); tipos de atendimento com tarifa (RF-20; antecipa a parte cadastral do RF-25, necessária para o turno ter tipo) | CMP-01, CMP-04 (médicos), CMP-08 · API-07 a API-10, API-23 a API-27, API-37, API-45 · `medicos`, `agendas_medico`, `tipos_atendimento` · telas `/app/admin/*` | Integração da matriz 13.2 para os recursos do incremento; usuário desativado não autentica; faixas de agenda sobrepostas rejeitadas |
 | **1b Pacientes** | Cadastro, edição, busca, ficha e idade (RF-01 a RF-03, RF-02a, RN-09, RN-12) | CMP-02 · API-11 a API-14 · `pacientes` (com `origem_cadastro`) · `/app/pacientes*` | Cenários Gherkin da HU-05 (CPF e e-mail duplicados, telefone compartilhado, idade 36) |
 | **1c Agenda e turnos** | Horários livres, marcação, cancelamento e reprogramação pela recepção (RF-17 a RF-20) | CMP-04 · API-28 a API-32 · `turnos` com índice único parcial (DT-14) · `/app/agenda` | Janela de 2 meses; corrida concorrente → 1 sucesso e 1 × 409 (RF-19) |
-| **1d Prontuário e controles** | Evoluções com próximo controle, máquina de estados, JOB-01, lista de trabalho, tentativas, consulta geral e vencidos (RF-04 a RF-15) | CMP-03, CMP-05, CMP-09 · API-15 a API-21 · `evolucoes`, `controles_futuros`, `tentativas_contato` · `/app/pacientes/:id/prontuario`, `/app/controles*`, `/app/inicio` (Recepção e Médico) | Cenários Gherkin de HU-01 a HU-04; JOB-01 com `FakeTimeProvider` (2027-03-18); **E2E fluxo 1** |
+| **1d-i Prontuário** | Evoluções (registro, leitura cronológica e correção auditada), acesso exclusivo do Médico, turno vinculado passa a *Atendido* (RF-04 a RF-06, RN-07) | CMP-03 · API-15 a API-17 · `evolucoes` · `/app/pacientes/:id/prontuario`, `/app/inicio` (Médico) | Cenários Gherkin da HU-04; matriz 13.2 do prontuário (células ❌ → 403); leitura auditada |
+| **1d-ii Controles futuros** | Próximo controle na evolução (RF-07, RF-08), máquina de estados, vínculo com turnos (RF-13), JOB-01, lista de trabalho, tentativas, consulta geral e vencidos (RF-09 a RF-15) | CMP-05, CMP-09 · API-16 (`proximoControle`), API-18 a API-21, `controleId` em API-30 · `controles_futuros`, `tentativas_contato` · `/app/controles*`, `/app/inicio` (Recepção) | Cenários Gherkin de HU-01 a HU-03; JOB-01 com `FakeTimeProvider` (2027-03-18); **E2E fluxo 1** |
 
 - **Observações:** os indicadores de controles (API-22, RF-35) e a tela inicial do Administrador ficam para a Fase 3, como no PRD. Na Fase 1, a alteração de e-mail do paciente (API-14) ainda não sincroniza contas do portal, porque elas só passam a existir na Fase 2.
 - **Critério de conclusão:** todos os cenários Gherkin de HU-01 a HU-05 automatizados e verdes; o fluxo do PRD §9.1 (controle *Pendente* → *Na janela* → *Contatado* → *Agendado* → *Realizado*) funciona de ponta a ponta na SPA.
