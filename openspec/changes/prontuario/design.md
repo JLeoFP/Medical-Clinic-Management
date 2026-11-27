@@ -14,7 +14,7 @@ CMP-03 (TDD §8.3) e a policy `ConteudoClinico` definem o comportamento. Ao inic
 
 ## Decisions
 
-1. **`Evolucao` (DT-01, DT-15):** sem exclusão; correção (API-17) auditada com antes/depois. O `medico_id` vem do claim `medicoId` da sessão (Médico sem registro de médico → 422 `medico.nao_cadastrado`). `data_atendimento` = instante atual.
+1. **`Evolucao` (DT-01, DT-15):** sem exclusão; correção (API-17) auditada com antes/depois. O `medico_id` vem do claim `medicoId` da sessão (Médico sem registro de médico → 422 `medico.nao_cadastrado`). `data_atendimento` = instante atual; a data-base do controle futuro segue a DT-51.
 2. **Vínculo com turno:** se `turnoId` é informado, o turno deve ser do mesmo paciente e médico e estar `Agendado` (senão 422 `evolucao.turno_invalido`); `turno.MarcarAtendido()` roda na mesma transação e levanta `TurnoAtendido`. `turno_id` é único em `evolucoes`.
 3. **Contrato de API-16 extensível:** o corpo aceita `proximoControle` opcional, ignorado/rejeitado até `controles-futuros` o implementar; a resposta já devolve `controle: null` e `sugestaoAgendamento: null`. Evita quebra de contrato depois.
 4. **Autorização (TDD §13.2):** todos os endpoints com `ConteudoClinico`; testes cobrem cada célula ❌. DTOs de ficha e de outros módulos não carregam texto clínico — teste que falha se expuserem campos de `Evolucao` (RNF-01).
